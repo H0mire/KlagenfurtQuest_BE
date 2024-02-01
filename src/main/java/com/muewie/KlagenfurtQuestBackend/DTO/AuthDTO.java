@@ -3,7 +3,7 @@ package com.muewie.KlagenfurtQuestBackend.DTO;
 public class AuthDTO {
     private String username;
     private String mail;
-    private String password;
+    private String hashedPassword;
 
     public String getUsername() {
         return username;
@@ -21,11 +21,11 @@ public class AuthDTO {
         this.mail = mail;
     }
 
-    public String getPassword() {
-        return password;
+    public String getHashedPassword() {
+        return hashedPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setHashedPassword(String hashedPassword) {
+        this.hashedPassword = hashedPassword;
     }
 }
