@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private long id;
 
     private String firstname;
     private String lastname;
@@ -25,7 +25,7 @@ public class Teacher {
         this.username = username;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

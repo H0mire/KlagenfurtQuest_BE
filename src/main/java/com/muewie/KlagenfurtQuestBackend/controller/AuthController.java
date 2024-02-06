@@ -3,13 +3,22 @@ package com.muewie.KlagenfurtQuestBackend.controller;
 import com.muewie.KlagenfurtQuestBackend.DTO.AuthDTO;
 import com.muewie.KlagenfurtQuestBackend.DTO.RegisterDTO;
 import com.muewie.KlagenfurtQuestBackend.repositories.TeacherRepository;
+import com.muewie.KlagenfurtQuestBackend.services.CustomUserDetailsService;
+import com.muewie.KlagenfurtQuestBackend.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.muewie.KlagenfurtQuestBackend.models.Teacher;
+
+import java.util.Date;
 
 @RestController
 public class AuthController {
@@ -17,39 +26,32 @@ public class AuthController {
     @Autowired
     private TeacherRepository tRepo;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AuthDTO authDTO) {
-        String mail = authDTO.getMail();
-        String username = authDTO.getUsername();
-        Teacher t;
-
-        if (mail != null) {
-            t = tRepo.findByMail(mail);
-            if (t == null) {
-                return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-            }
-            username = t.getUsername();
-        } else if (username != null) {
-            t = tRepo.findByUsername(username);
-            if (t == null) {
-                return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-            }
-        } else {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-        }
-        String hashedPassword = authDTO.getHashedPassword();
-        String hashedPasswordSaved = t.getHashedPassword();
-
-        //check if password provided
-        if(hashedPassword == null){
+    public ResponseEntity<String> login(@RequestBody AuthDTO authDTO) throws Exception {
+        try{
+            authenticate(authDTO);
+        } catch (Exception e) {
             return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
         }
 
-        if (!hashedPassword.equals(hashedPasswordSaved)) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-        }
-        return new ResponseEntity<>(username + " successfully logged in", HttpStatus.OK);
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authDTO.getUsername());
+        final String jwt = jwtUtil.generateToken(userDetails.getUsername());
+
+        return ResponseEntity.ok(jwt);
     }
+
 
 
     @PostMapping("/signup")
@@ -75,11 +77,17 @@ public class AuthController {
         t.setFirstname(firstname);
         t.setLastname(lastname);
         t.setMail(mail);
-        t.setHashedPassword(hashedPassword);
+        t.setHashedPassword(passwordEncoder.encode(hashedPassword));
         t.setUsername(username);
 
         tRepo.save(t);
 
-        return new ResponseEntity<String>(username + "signed up", HttpStatus.CREATED);
+        return new ResponseEntity<String>(username + " signed up", HttpStatus.CREATED);
+    }
+
+    private void authenticate(AuthDTO authDTO) throws Exception {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authDTO.getUsername(), authDTO.getHashedPassword())
+        );
     }
 }

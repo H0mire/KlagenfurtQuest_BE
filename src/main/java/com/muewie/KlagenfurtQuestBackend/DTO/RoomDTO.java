@@ -1,26 +1,26 @@
 package com.muewie.KlagenfurtQuestBackend.DTO;
 
 public class RoomDTO {
-    private int roomId;
+    private long roomId;
     private int roomNr;
 
-    private int tourId;
+    private long tourId;
 
-    private int teacherId;
+    private long teacherId;
 
-    public int getTourId() {
+    public long getTourId() {
         return tourId;
     }
 
-    public void setTourId(int tourId) {
+    public void setTourId(long tourId) {
         this.tourId = tourId;
     }
 
-    public int getRoomId() {
+    public long getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(int roomId) {
+    public void setRoomId(long roomId) {
         this.roomId = roomId;
     }
 
@@ -32,11 +32,11 @@ public class RoomDTO {
         this.roomNr = roomNr;
     }
 
-    public int getTeacherId() {
+    public long getTeacherId() {
         return teacherId;
     }
 
-    public void setTeacherId(int teacherId) {
+    public void setTeacherId(long teacherId) {
         this.teacherId = teacherId;
     }
 }

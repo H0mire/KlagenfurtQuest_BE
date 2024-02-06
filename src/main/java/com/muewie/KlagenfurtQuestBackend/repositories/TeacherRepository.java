@@ -4,11 +4,13 @@ import com.muewie.KlagenfurtQuestBackend.models.Teacher;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface TeacherRepository extends CrudRepository<Teacher, Long> {
-    Teacher findByFirstname(String firstname);
+    Optional<Teacher> findByFirstname(String firstname);
 
-    Teacher findByMail(String mail);
+    Optional<Teacher> findByMail(String mail);
 
-    Teacher findByUsername(String username);
+    Optional<Teacher> findByUsername(String username);
 }
