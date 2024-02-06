@@ -82,7 +82,9 @@ public class AuthController {
 
         tRepo.save(t);
 
-        return new ResponseEntity<String>(username + " signed up", HttpStatus.CREATED);
+        final String jwt = jwtUtil.generateToken(t.getUsername());
+
+        return new ResponseEntity<String>(jwt, HttpStatus.CREATED);
     }
 
     private void authenticate(AuthDTO authDTO) throws Exception {

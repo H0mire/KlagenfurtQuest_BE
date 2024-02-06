@@ -34,6 +34,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/rooms/**").hasRole("TEACHER")
                         .anyRequest().permitAll())
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .userDetailsService(userDetailsService)
