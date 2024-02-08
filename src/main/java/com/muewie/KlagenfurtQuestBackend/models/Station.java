@@ -112,7 +112,8 @@ public class Station {
         stationDTO.setStationNr(this.stationNr);
         stationDTO.setTourId(this.tour.getTourId());
         stationDTO.setStationLocation(this.stationLocation);
-        stationDTO.setNextStation(this.nextStation.toDTO());
+        if (this.nextStation != null)
+            stationDTO.setNextStation(this.nextStation.toDTO());
         stationDTO.setQuestions(this.questions.stream().map(Question::toDTO).collect(Collectors.toList()));
         return stationDTO;
     }

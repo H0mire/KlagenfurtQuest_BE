@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface TourRepository extends CrudRepository<Tour, Long> {
     Optional<Tour> findByTourId(long id);
-
+    Optional<Tour> findByTourName(String name);
 }
