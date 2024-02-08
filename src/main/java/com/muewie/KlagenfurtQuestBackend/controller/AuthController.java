@@ -20,6 +20,7 @@ import com.muewie.KlagenfurtQuestBackend.models.Teacher;
 
 import java.util.Date;
 
+//The AuthController is responsible for handling requests to the /login and /signup endpoint
 @RestController
 public class AuthController {
 
@@ -37,23 +38,23 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
-
+    //The login method is responsible for handling POST requests to the /login endpoint
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AuthDTO authDTO) throws Exception {
         try{
-            authenticate(authDTO);
+            authenticate(authDTO); //authenticate the user
         } catch (Exception e) {
             return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
         }
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authDTO.getUsername());
-        final String jwt = jwtUtil.generateToken(userDetails.getUsername());
+        final String jwt = jwtUtil.generateToken(userDetails.getUsername()); //generate Token so user can log in
 
         return ResponseEntity.ok(jwt);
     }
 
 
-
+    //The signup method is responsible for handling POST requests to the /signup endpoint
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterDTO registerDTO){
         String firstname;
@@ -80,13 +81,13 @@ public class AuthController {
         t.setHashedPassword(passwordEncoder.encode(hashedPassword));
         t.setUsername(username);
 
-        tRepo.save(t);
+        tRepo.save(t); //save the teacher to the database
 
-        final String jwt = jwtUtil.generateToken(t.getUsername());
+        final String jwt = jwtUtil.generateToken(t.getUsername()); //generate Token for the user
 
         return new ResponseEntity<String>(jwt, HttpStatus.CREATED);
     }
-
+    //Authenticate by using the authenticationManager
     private void authenticate(AuthDTO authDTO) throws Exception {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authDTO.getUsername(), authDTO.getHashedPassword())

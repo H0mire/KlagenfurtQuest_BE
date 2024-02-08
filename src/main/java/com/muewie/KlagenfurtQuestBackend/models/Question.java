@@ -24,7 +24,7 @@ public class Question {
     @JoinColumn(name="stationId")
     private Station station;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Answer> answers;
 
     private String content;

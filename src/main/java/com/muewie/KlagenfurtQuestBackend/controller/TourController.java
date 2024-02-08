@@ -10,18 +10,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.muewie.KlagenfurtQuestBackend.services.TourService;
 
+//The TourController is responsible for handling requests to the /tours endpoint
 @RestController
 public class TourController {
 
     @Autowired
     private TourService tourService;
 
+    //get Tour by id
     @GetMapping("/tours/{id}")
     public TourDTO getTourById(@PathVariable("id") long id) {
         TourDTO tour = tourService.getTourById(id);
         return tour;
     }
 
+    //get all tour or one by name
     @GetMapping("/tours")
     public ResponseEntity<?> getTours(@RequestParam(value = "name", required = false) String name) {
         if (name != null) {

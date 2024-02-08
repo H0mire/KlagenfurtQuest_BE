@@ -13,9 +13,11 @@ import com.muewie.KlagenfurtQuestBackend.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+//The RoomServiceImpl is responsible for handling the business logic of the Room entity
 @Service
 public class RoomServiceImpl implements RoomService {
     //autowire the RoomRepository
@@ -36,6 +38,7 @@ public class RoomServiceImpl implements RoomService {
         //create Room
         Room r = new Room();
 
+        //get teacher and tour
         Teacher t = teacherRepository.findById(roomDTO.getTeacherId()).orElseThrow();
         Tour tour = tourRepository.findByTourId(roomDTO.getTourId()).orElseThrow();
         //set available fields
@@ -94,6 +97,7 @@ public class RoomServiceImpl implements RoomService {
         participantRepository.save(p);
     }
 
+    //For future use
     @Override
     public void deleteRoom(Long id) {
 
@@ -101,7 +105,13 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<RoomDTO> getAllRooms() {
-        return null;
+        //get all rooms
+        List<Room> rooms = (List<Room>) roomRepository.findAll();
+        //create RoomDTOs
+        List<RoomDTO> roomDTOs = new java.util.ArrayList<>();
+        //set available fields
+        Arrays.stream(rooms.toArray()).forEach(room -> roomDTOs.add(((Room) room).toDTO()));
+        return roomDTOs;
     }
 
     @Override

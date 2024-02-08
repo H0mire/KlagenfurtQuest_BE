@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
+//For Authentication and Authorization to work, we need to configure the SecurityConfiguration
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -26,6 +28,7 @@ public class SecurityConfiguration {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
+    //This method is responsible for configuring the security filter chain
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.function.Function;
 
+
+//The JwtUtil class is responsible for handling the JWT token
 @Service
 public class JwtUtil {
 
@@ -46,6 +48,7 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
+    //used to extract the claims from the token
     private Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }

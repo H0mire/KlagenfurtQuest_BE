@@ -1,5 +1,6 @@
 package com.muewie.KlagenfurtQuestBackend.models;
 
+import com.muewie.KlagenfurtQuestBackend.DTO.RoomDTO;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -52,5 +53,14 @@ public class Room {
 
     public void setTour(Tour tour) {
         this.tour = tour;
+    }
+
+    public RoomDTO toDTO(){
+        RoomDTO roomDTO = new RoomDTO();
+        roomDTO.setRoomId(this.roomId);
+        roomDTO.setRoomNr(this.roomNr);
+        roomDTO.setTeacherId(this.teacher.getId());
+        roomDTO.setTourId(this.tour.getTourId());
+        return roomDTO;
     }
 }

@@ -28,8 +28,16 @@ public class Station {
     @JoinColumn(name="nextStationId")
     private Station nextStation;
 
-    @OneToMany(mappedBy = "station", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "station", cascade = CascadeType.ALL)
     private List<Question> questions;
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
 
     public long getStationId() {
         return stationId;

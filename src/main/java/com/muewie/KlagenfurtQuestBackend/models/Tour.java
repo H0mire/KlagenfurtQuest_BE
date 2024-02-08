@@ -20,11 +20,19 @@ public class Tour {
     @Basic(fetch = FetchType.LAZY)
     private byte[] tourImage;
 
-    @OneToMany(mappedBy = "tour")
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private List<Station> stations;
     @OneToOne
     @JoinColumn(name="firstStationId")
     private Station firstStation;
+
+    public List<Station> getStations() {
+        return stations;
+    }
+
+    public void setStations(List<Station> stations) {
+        this.stations = stations;
+    }
 
     public long getTourId() {
         return tourId;
