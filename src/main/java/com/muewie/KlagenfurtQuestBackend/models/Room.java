@@ -1,6 +1,9 @@
 package com.muewie.KlagenfurtQuestBackend.models;
 
 import jakarta.persistence.*;
+
+import java.util.List;
+
 @Entity
 @Table(name="room")
 public class Room {
@@ -8,8 +11,16 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long roomId;
     private int roomNr;
-    private long tourId;
-    private long teacherId;
+
+    @ManyToOne
+    @JoinColumn(name="teacherId")
+    private Teacher teacher;
+    @ManyToOne
+    @JoinColumn(name="tourId")
+    private Tour tour;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Participant> participants;
 
     public long getRoomId() {
         return roomId;
@@ -27,19 +38,19 @@ public class Room {
         this.roomNr = roomNr;
     }
 
-    public long getTourId() {
-        return tourId;
+    public Teacher getTeacher() {
+        return teacher;
     }
 
-    public void setTourId(long tourId) {
-        this.tourId = tourId;
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 
-    public long getTeacherId() {
-        return teacherId;
+    public Tour getTour() {
+        return tour;
     }
 
-    public void setTeacherId(long teacherId) {
-        this.teacherId = teacherId;
+    public void setTour(Tour tour) {
+        this.tour = tour;
     }
 }

@@ -1,5 +1,7 @@
 package com.muewie.KlagenfurtQuestBackend.DTO;
 
+import java.util.List;
+
 public class RoomDTO {
     private long roomId;
     private int roomNr;
@@ -7,6 +9,8 @@ public class RoomDTO {
     private long tourId;
 
     private long teacherId;
+
+    private List<ParticipantDTO> participants;
 
     public long getTourId() {
         return tourId;

@@ -1,8 +1,14 @@
 package com.muewie.KlagenfurtQuestBackend.services.impl;
 
 import com.muewie.KlagenfurtQuestBackend.DTO.RoomDTO;
+import com.muewie.KlagenfurtQuestBackend.models.Participant;
 import com.muewie.KlagenfurtQuestBackend.models.Room;
+import com.muewie.KlagenfurtQuestBackend.models.Teacher;
+import com.muewie.KlagenfurtQuestBackend.models.Tour;
+import com.muewie.KlagenfurtQuestBackend.repositories.ParticipantRepository;
 import com.muewie.KlagenfurtQuestBackend.repositories.RoomRepository;
+import com.muewie.KlagenfurtQuestBackend.repositories.TeacherRepository;
+import com.muewie.KlagenfurtQuestBackend.repositories.TourRepository;
 import com.muewie.KlagenfurtQuestBackend.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,15 +21,26 @@ public class RoomServiceImpl implements RoomService {
     //autowire the RoomRepository
     @Autowired
     private RoomRepository roomRepository;
+    @Autowired
+    private TeacherRepository teacherRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
+
+    @Autowired
+    private TourRepository tourRepository;
+
 
     @Override
     public RoomDTO createRoom(RoomDTO roomDTO) {
         //create Room
         Room r = new Room();
 
+        Teacher t = teacherRepository.findById(roomDTO.getTeacherId()).orElseThrow();
+        Tour tour = tourRepository.findByTourId(roomDTO.getTourId()).orElseThrow();
         //set available fields
-        r.setTeacherId(roomDTO.getTeacherId());
-        r.setTourId(roomDTO.getTourId());
+        r.setTeacher(t);
+        r.setTour(tour);
 
         //generate roomNr with 4 digits
         int roomNr = (int) (Math.random() * 9000) + 1000;
@@ -52,12 +69,29 @@ public class RoomServiceImpl implements RoomService {
 
         //update room
         r.setRoomNr(roomDetails.getRoomNr());
-        r.setTourId(roomDetails.getTourId());
-        r.setTeacherId(roomDetails.getTeacherId());
+
+        Teacher t = teacherRepository.findById(roomDetails
+                .getTeacherId()).orElseThrow();
+        r.setTeacher(t);
+        Tour tour = tourRepository.findByTourId(roomDetails.getTourId()).orElseThrow();
+        r.setTour(tour);
+
 
         //save room
         roomRepository.save(r);
         return roomDetails;
+    }
+
+    public void addParticipant(String nickname, int roomNr) {
+        //create Participant
+        Participant p = new Participant();
+        //set available fields
+        p.setNickname(nickname);
+        Room r = roomRepository.findByRoomNr(roomNr).orElseThrow();
+        p.setRoom(r);
+        p.setState("ready");
+        //save participant
+        participantRepository.save(p);
     }
 
     @Override
@@ -84,8 +118,8 @@ public class RoomServiceImpl implements RoomService {
         //set available fields
         roomDTO.setRoomId(r.getRoomId());
         roomDTO.setRoomNr(r.getRoomNr());
-        roomDTO.setTourId(r.getTourId());
-        roomDTO.setTeacherId(r.getTeacherId());
+        roomDTO.setTourId(r.getTour().getTourId());
+        roomDTO.setTeacherId(r.getTeacher().getId());
 
         return roomDTO;
     }
@@ -104,9 +138,26 @@ public class RoomServiceImpl implements RoomService {
         //set available fields
         roomDTO.setRoomId(r.getRoomId());
         roomDTO.setRoomNr(r.getRoomNr());
-        roomDTO.setTourId(r.getTourId());
-        roomDTO.setTeacherId(r.getTeacherId());
+
+        roomDTO.setTourId(r.getTour().getTourId());
+        roomDTO.setTeacherId(r.getTeacher().getId());
+
 
         return roomDTO;
+    }
+
+    @Override
+    public void setParticipantState(String nickname, int roomNr, String state) {
+        //check if participant exists
+        Optional<Participant> op = participantRepository.findByNicknameAndRoom_RoomNr(nickname, roomNr);
+        if (op.isEmpty()) {
+            return;
+        }
+        //get participant
+        Participant p = op.get();
+        //set state
+        p.setState(state);
+        //save participant
+        participantRepository.save(p);
     }
 }

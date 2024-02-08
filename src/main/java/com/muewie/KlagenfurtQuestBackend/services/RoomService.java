@@ -14,5 +14,7 @@ public interface RoomService {
     RoomDTO getRoomById(Long id);
 
     RoomDTO getRoomByRoomNr(long rmnr);
+
+    void setParticipantState(String nickname, int roomNr, String state);
 }
 

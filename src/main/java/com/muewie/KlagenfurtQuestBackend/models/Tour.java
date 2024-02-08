@@ -1,6 +1,11 @@
 package com.muewie.KlagenfurtQuestBackend.models;
 
+import com.muewie.KlagenfurtQuestBackend.DTO.StationDTO;
+import com.muewie.KlagenfurtQuestBackend.DTO.TourDTO;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="tour")
@@ -11,10 +16,15 @@ public class Tour {
 
     private String tourName;
     private String tourDescription;
-    private String tourImage;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] tourImage;
 
-    //foreign key to first station
-    private long firstStationId;
+    @OneToMany(mappedBy = "tour")
+    private List<Station> stations;
+    @OneToOne
+    @JoinColumn(name="firstStationId")
+    private Station firstStation;
 
     public long getTourId() {
         return tourId;
@@ -40,19 +50,34 @@ public class Tour {
         this.tourDescription = tourDescription;
     }
 
-    public String getTourImage() {
+    public byte[] getTourImage() {
         return tourImage;
     }
 
-    public void setTourImage(String tourImage) {
+    public void setTourImage(byte[] tourImage) {
         this.tourImage = tourImage;
     }
 
-    public long getFirstStationId() {
-        return firstStationId;
+    public Station getFirstStation() {
+        return firstStation;
     }
 
-    public void setFirstStationId(int firstStationId) {
-        this.firstStationId = firstStationId;
+    public void setFirstStation(Station firstStation) {
+        this.firstStation = firstStation;
+    }
+
+    public TourDTO toDTO() {
+        TourDTO tourDTO = new TourDTO();
+        tourDTO.setTourId(this.tourId);
+        tourDTO.setTourName(this.tourName);
+        tourDTO.setTourDescription(this.tourDescription);
+        tourDTO.setTourImage(this.tourImage);
+        tourDTO.setFirstStation(this.firstStation.toDTO());
+        List<StationDTO> stationDTOs = new ArrayList<>();
+        for (Station station : this.stations) {
+            stationDTOs.add(station.toDTO());
+        }
+        tourDTO.setStations(stationDTOs);
+        return tourDTO;
     }
 }

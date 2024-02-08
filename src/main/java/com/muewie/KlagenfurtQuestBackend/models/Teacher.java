@@ -1,6 +1,9 @@
 package com.muewie.KlagenfurtQuestBackend.models;
 
+import com.muewie.KlagenfurtQuestBackend.DTO.TeacherDTO;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name="teacher")
@@ -16,6 +19,10 @@ public class Teacher {
     private String mail;
 
     private String hashedPassword;
+
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Room> rooms;
+
 
     public String getUsername() {
         return username;
@@ -63,5 +70,15 @@ public class Teacher {
 
     public void setHashedPassword(String hashedPassword) {
         this.hashedPassword = hashedPassword;
+    }
+
+    public TeacherDTO toDTO() {
+        TeacherDTO teacherDTO = new TeacherDTO();
+        teacherDTO.setId(this.id);
+        teacherDTO.setFirstname(this.firstname);
+        teacherDTO.setLastname(this.lastname);
+        teacherDTO.setUsername(this.username);
+        teacherDTO.setMail(this.mail);
+        return teacherDTO;
     }
 }
